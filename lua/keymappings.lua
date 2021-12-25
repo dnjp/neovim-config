@@ -13,10 +13,10 @@ util.map('n', '<leader>r', ':source ~/.config/nvim/init.vim<Enter>')
 --
 -- navigation
 --
-util.map('n', '<C-J>', '<C-W><C-J>')
-util.map('n', '<C-K>', '<C-W><C-K>')
-util.map('n', '<C-L>', '<C-W><C-L>')
-util.map('n', '<C-H>', '<C-W><C-H>')
+util.map('n', '<C-j>', '<C-W><C-J>')
+util.map('n', '<C-k>', '<C-W><C-K>')
+util.map('n', '<C-l>', '<C-W><C-L>')
+util.map('n', '<C-h>', '<C-W><C-H>')
 
 --
 -- searching
@@ -120,4 +120,17 @@ util.map('n', '<Leader>rm', ':VimuxPromptCommand("make ")<CR>')
 util.map('n', '<Leader>rr', ':VimuxRunLastCommand<CR>')
 util.map('n', '<Leader>ri', ':VimuxInspectRunner<CR>')
 util.map('n', '<Leader>rc', ':VimuxCloseRunner<CR>')
+
+--
+-- Text Movement
+--
+vim.g.move_map_keys = 0
+vim.cmd [[vmap <A-Down> <Plug>MoveBlockDown]]
+vim.cmd [[vmap <A-Up> <Plug>MoveBlockUp]]
+vim.cmd [[vmap <A-Left> <Plug>MoveBlockLeft]]
+vim.cmd [[vmap <A-Right> <Plug>MoveBlockRight]]
+vim.cmd [[nmap <A-Down> <Plug>MoveLineDown]]
+vim.cmd [[nmap <A-Up> <Plug>MoveLineUp]]
+vim.cmd [[nmap <A-Left> <Plug>MoveCharLeft]]
+vim.cmd [[nmap <A-Right> <Plug>MoveCharRight]]
 

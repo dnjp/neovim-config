@@ -96,6 +96,7 @@ return require('packer').startup(function(use)
 	-- Editing behavior
 	--
 	use 'windwp/nvim-autopairs'
+	use 'matze/vim-move'
 
 	-- terminal
 	use {'akinsho/toggleterm.nvim'}
