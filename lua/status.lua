@@ -1,8 +1,3 @@
-
-
--- require('mini.statusline').setup({})
--- require('mini.starter').setup({})
-
 require'lualine'.setup {
   options = {
     icons_enabled = true,
