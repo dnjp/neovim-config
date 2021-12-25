@@ -15,9 +15,9 @@ require('easy')
 
 require('search')
 
-require('completion')
-
 require('lsp')
+
+require('completion')
 
 require('status')
 

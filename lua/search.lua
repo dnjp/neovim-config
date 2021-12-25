@@ -2,7 +2,7 @@ local ts = require('telescope')
 
 ts.load_extension("termfinder")
 ts.load_extension('fzy_native')
--- ts.load_extension('lsp_handlers')
+ts.load_extension('tmux')
 
 ts.setup{
 	defaults = {
@@ -21,28 +21,6 @@ ts.setup{
 				float_term = '<C-f>'
 			},
 		},
-		-- lsp_handlers = {
-		-- 	-- disable = {},
-		-- 	location = {
-		-- 		-- telescope = {},
-		-- 		telescope = require('telescope.themes').get_ivy({}),
-		-- 		no_results_message = 'No references found',
-		-- 	},
-		-- 	symbol = {
-		-- 		-- telescope = {},
-		-- 		telescope = require('telescope.themes').get_ivy({}),
-		-- 		no_results_message = 'No symbols found',
-		-- 	},
-		-- 	call_hierarchy = {
-		-- 		telescope = {},
-		-- 		no_results_message = 'No calls found',
-		-- 	},
-		-- 	code_action = {
-		-- 		telescope = require('telescope.themes').get_dropdown({}),
-		-- 		no_results_message = 'No code actions available',
-		-- 		prefix = '',
-		-- 	},
-		-- },
 	},
 }
 

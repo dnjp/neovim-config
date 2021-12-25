@@ -14,16 +14,11 @@ return require('packer').startup(function(use)
 	-- let packer manage itself
 	use 'wbthomason/packer.nvim'
 
-	use {
-		'nvim-treesitter/nvim-treesitter',
-		run = ':TSUpdate'
-	}
-
 	-- go
-	use 'nvim-lua/plenary.nvim'
-	use 'nvim-lua/popup.nvim'
-	-- use 'crispgm/nvim-go'
 	use 'ray-x/go.nvim'
+
+	-- terraform
+	use 'hashivim/vim-terraform'
 
 	-- lsp
 	use 'neovim/nvim-lspconfig'
@@ -39,18 +34,14 @@ return require('packer').startup(function(use)
 	use 'onsails/lspkind-nvim'
 
 	-- snippets
+	use "rafamadriz/friendly-snippets"
 	use 'L3MON4D3/LuaSnip'
 	use 'saadparwaiz1/cmp_luasnip'
 
 	-- ui
-	use {
-	  'nvim-lualine/lualine.nvim',
-	  requires = {'kyazdani42/nvim-web-devicons', opt = true}
-	}
-	use {'akinsho/bufferline.nvim', requires = 'kyazdani42/nvim-web-devicons'}
+	use 'nvim-lua/plenary.nvim'
+	use 'nvim-lua/popup.nvim'
 	---- themes
-	use 'kdheepak/monochrome.nvim'
-	use 'shaunsingh/nord.nvim'
 	use 'chriskempson/base16-vim'
 
 	---- file tree
@@ -61,15 +52,6 @@ return require('packer').startup(function(use)
 		},
 	}
 
-	-- searching
-	use {
-		'nvim-telescope/telescope.nvim',
-		requires = { 
-			'nvim-lua/plenary.nvim',
-			'nvim-telescope/telescope-fzy-native.nvim',
-			-- 'gbrlsnchs/telescope-lsp-handlers.nvim',
-		}
-	}
 
 	-- commenting
 	use {
@@ -80,35 +62,21 @@ return require('packer').startup(function(use)
 	}
 
 	-- git
-	use {
-		'TimUntersberger/neogit',
-		requires = {
-		  'nvim-lua/plenary.nvim',
-		  'sindrets/diffview.nvim'
-		},
-	}
 	use 'airblade/vim-gitgutter'
-	use 'samoshkin/vim-mergetool'
+	use {'pwntester/octo.nvim', config=function()
+		require"octo".setup()
+	end}
 
 	-- ease of use
 	use {
 		'folke/which-key.nvim',
 		config = function()
-			require('which-key').setup {
-			  -- your configuration comes here
-			  -- or leave it empty to use the default settings
-			  -- refer to the configuration section below
-			}
+			require('which-key').setup{}
 		end
 	}
-	-- use {
-	-- 	'windwp/nvim-autopairs',
-	-- 	config = function()
-	-- 		require('nvim-autopairs').setup{}
-	-- 	end
-	-- }
-	use 'wsdjeg/vim-fetch' -- use standard unix format for opening files: i.e. vi ${file}:${line}:${column}
-	use 'lambdalisue/suda.vim' -- make it easy to work with super user owned files
+	-- make it easy to work with super user owned files
+	use 'lambdalisue/suda.vim' 
+	-- various minimal tools
 	use {
 		'echasnovski/mini.nvim',
 		requires = {
@@ -117,9 +85,26 @@ return require('packer').startup(function(use)
 			'nvim-lua/plenary.nvim',
 		},
 	}
+	-- used by various plugins 
+	use {
+		'nvim-treesitter/nvim-treesitter',
+		run = ':TSUpdate'
+	}
+
 
 	-- terminal
 	use {'akinsho/toggleterm.nvim'}
+
+	-- telescope
+	use {
+		'nvim-telescope/telescope.nvim',
+		requires = { 
+			'nvim-lua/plenary.nvim',
+			'nvim-telescope/telescope-fzy-native.nvim',
+			-- 'gbrlsnchs/telescope-lsp-handlers.nvim',
+		}
+	}
+	use 'camgraff/telescope-tmux.nvim'
 	use {
 		'tknightz/telescope-termfinder.nvim',
 		requires = {
@@ -127,10 +112,7 @@ return require('packer').startup(function(use)
 			'nvim-telescope/telescope.nvim'
 		},
 	}
-
-	-- remote development
-	-- TODO
-	-- use 'jamestthompson3/nvim-remote-containers' -- https://github.com/jamestthompson3/nvim-remote-containers
+	use 'nvim-telescope/telescope-project.nvim'
 
 	-- tmux
 	use {
