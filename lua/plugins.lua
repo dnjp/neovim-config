@@ -84,14 +84,6 @@ return require('packer').startup(function(use)
 	use 'lambdalisue/suda.vim' 
 	-- various minimal tools
 	use 'nvim-lualine/lualine.nvim'
-	use {
-		'echasnovski/mini.nvim',
-		requires = {
-			'kyazdani42/nvim-web-devicons',
-			'lewis6991/gitsigns.nvim',
-			'nvim-lua/plenary.nvim',
-		},
-	}
 	-- used by various plugins 
 	use {
 		'nvim-treesitter/nvim-treesitter',
@@ -100,6 +92,10 @@ return require('packer').startup(function(use)
 	-- automatically detect indentation
 	use 'tpope/vim-sleuth'
 
+	--
+	-- Editing behavior
+	--
+	use 'windwp/nvim-autopairs'
 
 	-- terminal
 	use {'akinsho/toggleterm.nvim'}
