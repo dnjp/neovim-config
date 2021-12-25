@@ -1,10 +1,19 @@
-vim.g.gitgutter_set_sign_backgrounds = 1
-vim.cmd 'let base16colorspace=256'
-vim.cmd[[
-	if filereadable(expand("~/.vimrc_background"))
-		source ~/.vimrc_background
-		highlight SignColumn guibg=bg
-		highlight LineNr guibg=bg
-	endif
-]]
+-- vim.cmd 'let base16colorspace=256'
 
+-- vim.cmd[[
+-- 	if filereadable(expand("~/.vimrc_background"))
+-- 		source ~/.vimrc_background
+-- 	endif
+-- ]]
+
+local nightfox = require('nightfox')
+
+-- This function set the configuration of nightfox. If a value is not passed in the setup function
+-- it will be taken from the default configuration above
+nightfox.setup({
+	fox = "nordfox", -- change the colorscheme to use nordfox
+	terminal_colors = true,
+})
+
+-- Load the configuration set above and apply the colorscheme
+nightfox.load()

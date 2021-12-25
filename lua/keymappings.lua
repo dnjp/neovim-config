@@ -35,18 +35,8 @@ util.map('n', '<A-[>', ':BufferLineCyclePrev<CR>')
 --
 -- sidebar
 --
-util.map('n', '<C-A-b>', ':NvimTreeToggle<CR>')
-util.map('n', '<leader>R', ':NvimTreeFindFile<CR>')
-
---
--- git
---
--- util.map('n', '<leader>s', ':Neogit<CR>')
-util.map('n', '<leader>mt', '<plug>(MergetoolToggle)')
-util.map('n', 'mh', ':MergetoolDiffExchangeLeft<CR>')
-util.map('n', 'ml', ':MergetoolDiffExchangeRight<CR>')
-util.map('n', 'mj', ':MergetoolDiffExchangeDown<CR>')
-util.map('n', 'mk', ':MergetoolDiffExchangeUp<CR>')
+util.map('n', '<A-b>', ':NvimTreeToggle<CR>')
+util.map('n', '<A-r>', ':NvimTreeFindFile<CR>')
 
 --
 -- tmux
@@ -63,6 +53,8 @@ util.map('n', "<A-p>", "<CMD>lua require('Navigator').previous()<CR>", opts)
 --
 function _G.set_terminal_keymaps()
 	local opts = {noremap = true}
+	-- do not treat space key as leader
+	vim.api.nvim_buf_set_keymap(0, 't', '<Space>', ' ', {noremap = true, nowait = true})
 	vim.api.nvim_buf_set_keymap(0, 't', 'zz', [[<C-\><C-n>]], opts)
 	vim.api.nvim_buf_set_keymap(0, 't', '<C-A-h>', [[<C-\><C-n><C-W>h]], opts)
 	vim.api.nvim_buf_set_keymap(0, 't', '<C-A-j>', [[<C-\><C-n><C-W>j]], opts)
@@ -76,59 +68,38 @@ vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
 
 local Terminal  = require('toggleterm.terminal').Terminal
 local lazygit = Terminal:new({
-	cmd = "lazygit",
+	cmd = "zsh -c 'source ~/.zshrc && lazygit'",
 	dir = "git_dir",
 	hidden = true,
-	direction = "float",
-	float_opts = {
-	  border = "double",
-	},
+	direction = "horizontal",
+	-- direction = "float",
+	-- float_opts = {
+	--   border = "double",
+	-- },
 	insert_mappings = false,
-	-- function to run on opening the terminal
 	on_open = function(term)
-	  -- vim.api.nvim_buf_set_keymap(term.bufnr, "n", "q", "<cmd>close<CR>", {noremap = true, silent = true})
+	  vim.cmd ':resize 40'
 	  vim.api.nvim_buf_set_keymap(term.bufnr, "t", "q", "<cmd>lua _lazygit_toggle()<CR>", {noremap = true, silent = true})
 	end,
-	-- function to run on closing the terminal
-	-- on_close = function(term)
-	-- end,
+	on_close = function(term)
+	  vim.cmd ':resize 15'
+	end,
 })
 
 function _lazygit_toggle()
 	lazygit:toggle()
 end
 
+-- lazygit
 vim.api.nvim_set_keymap("n", "<leader>s", "<cmd>lua _lazygit_toggle()<CR>", {noremap = true, silent = true})
-
 util.map('n', "<C-A-\\>", ":ToggleTermToggleAll<CR>", opts)
-
-
+-- list active terminals
 util.map('n', "<C-A-l>", ":Telescope termfinder find<CR>")
-
---
--- Lspsaga
---
--- TODO: convert these to call lua functions instead of using ex commands
-util.map('n', 'gr', '<cmd>lua require\'lspsaga.provider\'.lsp_finder()<CR>')
-util.map('n', '<leader>ca', ':Lspsaga code_action<CR>', {silent=true})
-util.map('n', 'K', ':Lspsaga hover_doc<CR>', {silent=true})
-util.map('n', '<C-A-F>', '<cmd>lua require(\'lspsaga.action\').smart_scroll_with_saga(1)<CR>', {silent=true})
-util.map('n', '<C-A-B>', '<cmd>lua require(\'lspsaga.action\').smart_scroll_with_saga(-1)<CR>', {silent=true})
-util.map('n', '<leader>csh', ':Lspsaga signature_help<CR>', {silent=true})
-util.map('n', '<leader>rn', ':Lspsaga rename<CR>', {silent=true})
-util.map('n', 'gD', ':Lspsaga preview_definition<CR>', {silent=true})
-util.map('n', '<leader>D', ':Lspsaga show_line_diagnostics<CR>', {silent=true})
-util.map('n', '[e', ':Lspsaga diagnostic_jump_next<CR>', {silent=true})
-util.map('n', ']e', ':Lspsaga diagnostic_jump_prev<CR>', {silent=true})
-util.map('n', '<leader>cot', ':Lspsaga open_floaterm<CR>', {silent=true})
-util.map('t', '<leader>cct', '<C-\\><C-n>:Lspsaga close_floaterm<CR>', {silent=true})
-util.map('v', '<leader>cca', ':<C-U>Lspsaga range_code_action<CR>', {silent=true})
 
 --
 -- Tmux
 --
 util.map('n', '<leader>T', ':Telescope tmux windows<CR>', {silent=true})
-
 
 --
 -- Project Management
@@ -139,3 +110,14 @@ vim.api.nvim_set_keymap(
     ":lua require'telescope'.extensions.project.project{display_type='full'}<CR>",
     {noremap = true, silent = true}
 )
+
+--
+-- Task Runners
+--
+util.map('n', '<Leader>R', ':VimuxPromptCommand<CR>')
+util.map('n', '<Leader>rg', ':VimuxPromptCommand("go ")<CR>')
+util.map('n', '<Leader>rm', ':VimuxPromptCommand("make ")<CR>')
+util.map('n', '<Leader>rr', ':VimuxRunLastCommand<CR>')
+util.map('n', '<Leader>ri', ':VimuxInspectRunner<CR>')
+util.map('n', '<Leader>rc', ':VimuxCloseRunner<CR>')
+

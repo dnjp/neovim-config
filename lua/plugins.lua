@@ -4,10 +4,10 @@ if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
 end
 
 vim.cmd([[
-	augroup packer_user_config
-	  autocmd!
-	  autocmd BufWritePost plugins.lua source <afile> | PackerCompile
-	augroup end
+augroup packer_user_config
+autocmd!
+autocmd BufWritePost plugins.lua source <afile> | PackerCompile
+augroup end
 ]])
 
 return require('packer').startup(function(use)
@@ -22,7 +22,6 @@ return require('packer').startup(function(use)
 
 	-- lsp
 	use 'neovim/nvim-lspconfig'
-	use 'tami5/lspsaga.nvim'
 	-- completion
 	use 'hrsh7th/cmp-nvim-lsp'
 	use 'hrsh7th/cmp-buffer'
@@ -32,6 +31,8 @@ return require('packer').startup(function(use)
 	use 'hrsh7th/cmp-nvim-lua'
 	-- vs code like completion candidate icons
 	use 'onsails/lspkind-nvim'
+	-- signatures
+	use 'ray-x/lsp_signature.nvim'
 
 	-- snippets
 	use "rafamadriz/friendly-snippets"
@@ -42,7 +43,7 @@ return require('packer').startup(function(use)
 	use 'nvim-lua/plenary.nvim'
 	use 'nvim-lua/popup.nvim'
 	---- themes
-	use 'chriskempson/base16-vim'
+	use 'EdenEast/nightfox.nvim'
 
 	---- file tree
 	use {
@@ -56,16 +57,21 @@ return require('packer').startup(function(use)
 	-- commenting
 	use {
 		'numToStr/Comment.nvim',
-		config = function()
-			require('Comment').setup()
-		end
 	}
 
+	--
 	-- git
-	use 'airblade/vim-gitgutter'
+	--
+	use {
+		'lewis6991/gitsigns.nvim',
+		requires = {
+			'nvim-lua/plenary.nvim'
+		},
+	}	
 	use {'pwntester/octo.nvim', config=function()
 		require"octo".setup()
 	end}
+	use 'whiteinge/diffconflicts'
 
 	-- ease of use
 	use {
@@ -77,6 +83,7 @@ return require('packer').startup(function(use)
 	-- make it easy to work with super user owned files
 	use 'lambdalisue/suda.vim' 
 	-- various minimal tools
+	use 'nvim-lualine/lualine.nvim'
 	use {
 		'echasnovski/mini.nvim',
 		requires = {
@@ -90,6 +97,8 @@ return require('packer').startup(function(use)
 		'nvim-treesitter/nvim-treesitter',
 		run = ':TSUpdate'
 	}
+	-- automatically detect indentation
+	use 'tpope/vim-sleuth'
 
 
 	-- terminal
@@ -101,7 +110,6 @@ return require('packer').startup(function(use)
 		requires = { 
 			'nvim-lua/plenary.nvim',
 			'nvim-telescope/telescope-fzy-native.nvim',
-			-- 'gbrlsnchs/telescope-lsp-handlers.nvim',
 		}
 	}
 	use 'camgraff/telescope-tmux.nvim'
@@ -116,15 +124,16 @@ return require('packer').startup(function(use)
 
 	-- tmux
 	use {
-	    'numToStr/Navigator.nvim',
-	    config = function()
-		require('Navigator').setup()
-	    end
+		'numToStr/Navigator.nvim',
+		config = function()
+			require('Navigator').setup()
+		end
 	}
+	use 'preservim/vimux'
 
 	if packer_bootstrap then
 		require('packer').sync()
 	end
-	end
+end
 )
 

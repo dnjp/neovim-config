@@ -23,26 +23,29 @@ ls.config.set_config({
 
 require('luasnip.loaders.from_vscode').load({
 	paths = {
-	    '~/.local/share/nvim/site/pack/packer/start/friendly-snippets',
-	    vim.fn.stdpath('config')..'/snippets'
+		'~/.local/share/nvim/site/pack/packer/start/friendly-snippets',
+		vim.fn.stdpath('config')..'/snippets'
 	}
 })
 
 require'nvim-treesitter.configs'.setup {
-  -- One of "all", "maintained" (parsers with maintainers), or a list of languages
-  ensure_installed = "maintained",
-  sync_install = false,
-  highlight = { enable = false },
-  indent = { enable = true },
+	-- One of "all", "maintained" (parsers with maintainers), or a list of languages
+	ensure_installed = "maintained",
+	sync_install = false,
+	highlight = { enable = false },
+	indent = { enable = true },
 }
 
+-- comment handling
+require('Comment').setup()
+
 local has_words_before = function()
-  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+	local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+	return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
 local feedkey = function(key, mode)
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
+	vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
 end
 
 require('lspkind').init({
@@ -124,14 +127,14 @@ cmp.setup({
 		{ name = 'buffer' },
 		-- { name = 'vsnip' },
 	}, {
-		{
-			name = 'buffer',
-			-- keyword_length = 5,
-			-- option = {
-			-- 	get_bufnrs = function() return { vim.api.nvim_get_current_buf() } end
-			-- }
-		}
-	})
+			{
+				name = 'buffer',
+				-- keyword_length = 5,
+				-- option = {
+				-- 	get_bufnrs = function() return { vim.api.nvim_get_current_buf() } end
+				-- }
+			}
+		})
 })
 
 -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
@@ -146,7 +149,7 @@ cmp.setup.cmdline(':', {
 	sources = cmp.config.sources({
 		{ name = 'path' }
 	}, {
-		{ name = 'cmdline' }
-	})
+			{ name = 'cmdline' }
+		})
 })
 
