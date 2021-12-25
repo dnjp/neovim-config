@@ -22,6 +22,13 @@ return require('packer').startup(function(use)
 
 	-- lsp
 	use 'neovim/nvim-lspconfig'
+	use {
+		'williamboman/nvim-lsp-installer',
+		requires = {
+			'neovim/nvim-lspconfig',
+		},
+	}
+
 	-- completion
 	use 'hrsh7th/cmp-nvim-lsp'
 	use 'hrsh7th/cmp-buffer'
@@ -97,6 +104,12 @@ return require('packer').startup(function(use)
 	--
 	use 'windwp/nvim-autopairs'
 	use 'matze/vim-move'
+	use {
+		"blackCauldron7/surround.nvim",
+		config = function()
+			require"surround".setup {mappings_style = "sandwich"}
+		end
+	}
 
 	-- terminal
 	use {'akinsho/toggleterm.nvim'}

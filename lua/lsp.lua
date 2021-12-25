@@ -1,6 +1,7 @@
 local util = require('util')
 local lspconfig = require('lspconfig')
 local nvim_lsp = require('cmp_nvim_lsp')
+local lsp_installer = require("nvim-lsp-installer")
 
 require('go').setup()
 
@@ -49,46 +50,38 @@ capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 -- Language Servers
 --
 --
+lsp_installer.on_server_ready(function(server)
+	local default_opts = {
+		on_attach = on_attach,
+		capabilities = capabilities,
+	}
 
---
--- Go
---
-lspconfig.gopls.setup({
-	capabilities = capabilities,
-	on_attach = on_attach,
-	flags = {
-		debounce_text_changes = 150,
-	},
-	cmd = {"gopls", "serve"},
-})
-
---
--- Typescript
---
-lspconfig.tsserver.setup{
-	capabilities = capabilities,
-	on_attach = on_attach,
-}
-
---
--- Terraform
---
-lspconfig.terraformls.setup{
-	capabilities = capabilities,
-	on_attach = on_attach,
-}
-
---
--- Java
---
-lspconfig.jdtls.setup{
-	capabilities = capabilities,
-	on_attach = on_attach,
-	cmd = { 'jdtls' },
-	root_dir = function(fname)
-		return require'lspconfig'.util.root_pattern('pom.xml', 'gradle.build', '.git')(fname) or vim.fn.getcwd()
-	end
-}
+	local server_opts = {
+		-- Provide settings that should only apply to the "eslintls" server
+		-- ["eslintls"] = function()
+		-- 	default_opts.settings = {
+		-- 		format = {
+		-- 			enable = true,
+		-- 		},
+		-- 	}
+		-- end,
+		["jdtls"] = function()
+			default_opts.root_dir = function(fname)
+				return require'lspconfig'.util.root_pattern('pom.xml', 'gradle.build', '.git')(fname) or vim.fn.getcwd()
+			end
+		end,
+		["gopls"] = function()
+			default_opts.flags = {
+				debounce_text_changes = 150,
+			}
+		end,
+	}
+	-- This setup() function is exactly the same as lspconfig's setup function.
+	-- Refer to https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+	-- Use the server's custom settings, if they exist, otherwise default to the default options
+	local server_options = server_opts[server.name] and server_opts[server.name]() or default_opts
+	server:setup(server_options)
+end)
 
 --
 --
