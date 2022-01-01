@@ -28,6 +28,18 @@ return require('packer').startup(function(use)
 			'neovim/nvim-lspconfig',
 		},
 	}
+	-- debugger adapter protocol (dap)
+	use 'mfussenegger/nvim-dap'
+	use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
+	use {
+		'theHamsta/nvim-dap-virtual-text',
+		requires = {
+			'nvim-treesitter/nvim-treesitter',
+			'mfussenegger/nvim-dap',
+		},
+	}
+	use 'nvim-telescope/telescope-dap.nvim'
+	use 'Pocco81/DAPInstall.nvim'
 
 	-- completion
 	use 'hrsh7th/cmp-nvim-lsp'
@@ -51,6 +63,7 @@ return require('packer').startup(function(use)
 	use 'nvim-lua/popup.nvim'
 	---- themes
 	use 'EdenEast/nightfox.nvim'
+	use 'chriskempson/base16-vim'
 
 	---- file tree
 	use {
@@ -74,7 +87,7 @@ return require('packer').startup(function(use)
 		requires = {
 			'nvim-lua/plenary.nvim'
 		},
-	}	
+	}
 	use {'pwntester/octo.nvim', config=function()
 		require"octo".setup()
 	end}
@@ -88,10 +101,10 @@ return require('packer').startup(function(use)
 		end
 	}
 	-- make it easy to work with super user owned files
-	use 'lambdalisue/suda.vim' 
+	use 'lambdalisue/suda.vim'
 	-- various minimal tools
 	use 'nvim-lualine/lualine.nvim'
-	-- used by various plugins 
+	-- used by various plugins
 	use {
 		'nvim-treesitter/nvim-treesitter',
 		run = ':TSUpdate'
@@ -117,7 +130,7 @@ return require('packer').startup(function(use)
 	-- telescope
 	use {
 		'nvim-telescope/telescope.nvim',
-		requires = { 
+		requires = {
 			'nvim-lua/plenary.nvim',
 			'nvim-telescope/telescope-fzy-native.nvim',
 		}

@@ -7,16 +7,22 @@ vim.g.mapleader = ' '
 --
 util.map('n', ';', ':')
 util.map('n', 'Q', ':q<CR>')
-util.map('n', '<leader>k', ':noh<Enter>')
-util.map('n', '<leader>r', ':source ~/.config/nvim/init.vim<Enter>')
+util.map('n', '<leader>k', ':noh<CR>')
+util.map('n', '<leader>l', ':b #<CR>')
 
 --
 -- navigation
 --
-util.map('n', '<C-j>', '<C-W><C-J>')
-util.map('n', '<C-k>', '<C-W><C-K>')
-util.map('n', '<C-l>', '<C-W><C-L>')
-util.map('n', '<C-h>', '<C-W><C-H>')
+-- util.map('n', '<C-j>', '<C-W><C-J>')
+-- util.map('n', '<C-k>', '<C-W><C-K>')
+-- util.map('n', '<C-l>', '<C-W><C-L>')
+-- util.map('n', '<C-h>', '<C-W><C-H>')
+local opts = { noremap = true, silent = true }
+vim.api.nvim_set_keymap('n', "<C-h>", "<CMD>lua require('Navigator').left()<CR>", opts)
+vim.api.nvim_set_keymap('n', "<C-k>", "<CMD>lua require('Navigator').up()<CR>", opts)
+vim.api.nvim_set_keymap('n', "<C-l>", "<CMD>lua require('Navigator').right()<CR>", opts)
+vim.api.nvim_set_keymap('n', "<C-j>", "<CMD>lua require('Navigator').down()<CR>", opts)
+vim.api.nvim_set_keymap('n', "<C-p>", "<CMD>lua require('Navigator').previous()<CR>", opts)
 
 --
 -- searching
@@ -79,7 +85,7 @@ local lazygit = Terminal:new({
 	insert_mappings = false,
 	on_open = function(term)
 	  vim.cmd ':resize 40'
-	  vim.api.nvim_buf_set_keymap(term.bufnr, "t", "q", "<cmd>lua _lazygit_toggle()<CR>", {noremap = true, silent = true})
+	  vim.api.nvim_buf_set_keymap(term.bufnr, "t", "<C-q>", "<cmd>lua _lazygit_toggle()<CR>", {noremap = true, silent = true})
 	end,
 	on_close = function(term)
 	  vim.cmd ':resize 15'
@@ -133,4 +139,38 @@ vim.cmd [[nmap <A-Down> <Plug>MoveLineDown]]
 vim.cmd [[nmap <A-Up> <Plug>MoveLineUp]]
 vim.cmd [[nmap <A-Left> <Plug>MoveCharLeft]]
 vim.cmd [[nmap <A-Right> <Plug>MoveCharRight]]
+
+--
+-- Go
+--
+vim.cmd [[autocmd FileType go nmap <Leader><Leader>l GoLint]]
+vim.cmd [[autocmd FileType go nmap <Leader>gc :lua require('go.comment').gen()]]
+vim.cmd [[autocmd FileType go nmap <Leader>gdt :GoDebug test<CR>]]
+vim.cmd [[autocmd FileType go nmap <Leader>gdf :GoDebug file<CR>]]
+vim.cmd [[autocmd FileType go nmap <Leader>gdd :GoDebug nearest<CR>]]
+vim.cmd [[autocmd FileType go nmap <Leader>gt :GoTest<CR>]]
+
+--
+-- DAP
+--
+-- Run :GoDebug <kind> (or manual call dap.continue()) which will 
+-- enable the following keybindings for the Go debug mode:
+--
+-- c	continue
+-- n	next
+-- s	step
+-- o	stepout
+-- S	cap S: stop debug
+-- u	up
+-- D	cap D: down
+-- C	cap C: run to cursor
+-- b	toggle breakpoint
+-- P	cap P: pause
+-- p	print, hover value (also in visual mode)
+--
+util.map('n', '<Leader>ds', '<cmd>lua require"dap".continue()<CR>', opts)
+util.map('n', '<Leader>dq', '<cmd>lua require"dap".terminate()<CR>', opts)
+util.map('n', '<Leader>bp', '<cmd>lua require"dap".toggle_breakpoint()<CR>', opts)
+util.map('n', '<Leader>di', '<cmd>lua require"dap".step_into()<CR>', opts)
+util.map('n', '<Leader>do', '<cmd>lua require"dap".step_over()<CR>', opts)
 

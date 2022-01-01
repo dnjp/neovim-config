@@ -1,5 +1,6 @@
 local ts = require('telescope')
 
+ts.load_extension('dap')
 ts.load_extension("termfinder")
 ts.load_extension('fzy_native')
 ts.load_extension('tmux')
