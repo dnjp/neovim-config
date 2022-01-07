@@ -25,9 +25,9 @@ if filereadable(expand("~/.vimrc_background"))
 endif
 ]]
 
-vim.cmd 'highlight SignColumn guibg=bg'
-vim.cmd 'highlight LineNr guibg=bg'
-vim.cmd [[execute 'highlight GitSignsChange guibg=bg guifg=#' . g:base16_gui0D]]
-vim.cmd [[execute 'highlight GitSignsDelete guibg=bg guifg=#' . g:base16_gui08]]
-vim.cmd [[execute 'highlight GitSignsAdd guibg=bg guifg=#' . g:base16_gui0B]]
-vim.cmd [[execute 'highlight VertSplit guibg=none guifg=#' . g:base16_gui03]]
+-- vim.cmd 'highlight SignColumn guibg=bg'
+-- vim.cmd 'highlight LineNr guibg=bg'
+-- vim.cmd [[execute 'highlight GitSignsChange guibg=bg guifg=#' . g:base16_gui0D]]
+-- vim.cmd [[execute 'highlight GitSignsDelete guibg=bg guifg=#' . g:base16_gui08]]
+-- vim.cmd [[execute 'highlight GitSignsAdd guibg=bg guifg=#' . g:base16_gui0B]]
+-- vim.cmd [[execute 'highlight VertSplit guibg=none guifg=#' . g:base16_gui03]]

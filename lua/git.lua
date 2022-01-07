@@ -1,4 +1,4 @@
-vim.cmd "let $GIT_EDITOR = 'nvr -cc split --remote-wait +\"set bufhidden=wipe\"'"
+vim.cmd "let $GIT_EDITOR = 'nvr -cc split --remote-wait +\"setlocal bufhidden=wipe\"'"
 vim.cmd 'autocmd FileType gitcommit,gitrebase,gitconfig set bufhidden=delete'
 
 require('gitsigns').setup {

@@ -13,10 +13,6 @@ util.map('n', '<leader>l', ':b #<CR>')
 --
 -- navigation
 --
--- util.map('n', '<C-j>', '<C-W><C-J>')
--- util.map('n', '<C-k>', '<C-W><C-K>')
--- util.map('n', '<C-l>', '<C-W><C-L>')
--- util.map('n', '<C-h>', '<C-W><C-H>')
 local opts = { noremap = true, silent = true }
 vim.api.nvim_set_keymap('n', "<C-h>", "<CMD>lua require('Navigator').left()<CR>", opts)
 vim.api.nvim_set_keymap('n', "<C-k>", "<CMD>lua require('Navigator').up()<CR>", opts)
@@ -27,10 +23,25 @@ vim.api.nvim_set_keymap('n', "<C-p>", "<CMD>lua require('Navigator').previous()<
 --
 -- searching
 --
-util.map('n', '<C-F>', '<cmd>lua require(\'telescope.builtin\').find_files()<cr>')
-util.map('n', '<C-G>', '<cmd>lua require(\'telescope.builtin\').live_grep()<cr>')
-util.map('n', '<C-P>', '<cmd>lua require(\'telescope.builtin\').git_files()<cr>')
-util.map('n', '<C-B>', '<cmd>lua require(\'telescope.builtin\').buffers()<cr>')
+vim.api.nvim_set_keymap('n', '<C-F>',
+    "<cmd>lua require('fzf-lua').files()<CR>",
+    { noremap = true, silent = true })
+
+vim.api.nvim_set_keymap('n', '<C-G>',
+    "<cmd>lua require('fzf-lua').live_grep_native()<CR>",
+    { noremap = true, silent = true })
+
+vim.api.nvim_set_keymap('n', '<C-P>',
+    "<cmd>lua require('fzf-lua').git_files()<CR>",
+    { noremap = true, silent = true })
+
+vim.api.nvim_set_keymap('n', '<C-B>',
+    "<cmd>lua require('fzf-lua').buffers()<CR>",
+    { noremap = true, silent = true })
+
+vim.api.nvim_set_keymap('n', '<space>gs',
+    "<cmd>lua require('fzf-lua').git_status()<CR>",
+    { noremap = true, silent = true })
 
 --
 -- buffer management
@@ -77,11 +88,11 @@ local lazygit = Terminal:new({
 	cmd = "zsh -c 'source ~/.zshrc && lazygit'",
 	dir = "git_dir",
 	hidden = true,
-	direction = "horizontal",
-	-- direction = "float",
-	-- float_opts = {
-	--   border = "double",
-	-- },
+	-- direction = "horizontal",
+	direction = "float",
+	float_opts = {
+	  border = "single",
+	},
 	insert_mappings = false,
 	on_open = function(term)
 	  vim.cmd ':resize 40'
@@ -99,23 +110,6 @@ end
 -- lazygit
 vim.api.nvim_set_keymap("n", "<leader>s", "<cmd>lua _lazygit_toggle()<CR>", {noremap = true, silent = true})
 util.map('n', "<C-A-\\>", ":ToggleTermToggleAll<CR>", opts)
--- list active terminals
-util.map('n', "<C-A-l>", ":Telescope termfinder find<CR>")
-
---
--- Tmux
---
-util.map('n', '<leader>T', ':Telescope tmux windows<CR>', {silent=true})
-
---
--- Project Management
---
-vim.api.nvim_set_keymap(
-    'n',
-    '<C-A-p>',
-    ":lua require'telescope'.extensions.project.project{display_type='full'}<CR>",
-    {noremap = true, silent = true}
-)
 
 --
 -- Task Runners
