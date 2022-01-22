@@ -1,63 +1,17 @@
-local cmp = require('cmp')
-local lspkind = require('lspkind')
-local luasnip = require('luasnip')
--- local types = require("luasnip.util.types")
-
-luasnip.config.set_config({
-	history = true,
-	-- Update more often, :h events for more info.
-	updateevents = "TextChanged,TextChangedI",
-	-- ext_opts = {
-	-- 	[types.choiceNode] = {
-	-- 		active = {
-	-- 			virt_text = { { "choiceNode", "Comment" } },
-	-- 		},
-	-- 	},
-	-- },
-	-- treesitter-hl has 100, use something higher (default is 200).
-	-- ext_base_prio = 300,
-	-- minimal increase in priority.
-	ext_prio_increase = 1,
-	enable_autosnippets = true,
-})
-
 -- comment handling
 require('Comment').setup()
 
-require('luasnip.loaders.from_vscode').load({
-	paths = {
-		'~/.local/share/nvim/site/pack/packer/start/friendly-snippets',
-		vim.fn.stdpath('config')..'/snippets'
-	}
-})
-
-local has_words_before = function()
-	local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-	return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-end
-
--- local feedkey = function(key, mode)
--- 	vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
--- end
-
-require('lspkind').init({
-	-- enables text annotations
-	--
-	-- default: true
-	with_text = true,
-
-	-- default symbol map
-	-- can be either 'default' (requires nerd-fonts font) or
-	-- 'codicons' for codicon preset (requires vscode-codicons font)
-	--
-	-- default: 'default'
-	preset = 'default',
-})
+-- Setup nvim-cmp.
+local cmp = require'cmp'
 
 cmp.setup({
 	completion = {
-		autocomplete = false,
-		completeopt = 'menu,menuone,noselect'
+                -- actually enables autocompletion. autocomplete=true on its own doesn't work.
+		autocomplete = {
+		    require('cmp.types').cmp.TriggerEvent.InsertEnter,
+		    require('cmp.types').cmp.TriggerEvent.TextChanged
+		},
+                completeopt = 'menu,menuone,noselect',
 	},
 	formatting = {
 		fields = {
@@ -65,64 +19,30 @@ cmp.setup({
 			cmp.ItemField.Kind,
 			cmp.ItemField.Menu,
 		},
-		format = lspkind.cmp_format({
-			with_text = true, -- whether to show text alongside icons
-			maxwidth = 50,
-		})
 	},
 	snippet = {
 		expand = function(args)
-			luasnip.lsp_expand(args.body)
+			require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
 		end,
 	},
 	mapping = {
-		-- ['<C-p>'] = cmp.mapping.select_prev_item(),
-		-- ['<C-n>'] = cmp.mapping.select_next_item(),
 		['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
 		['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
-		[''] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
+		['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
 		['<C-y>'] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
 		['<C-e>'] = cmp.mapping({
 			i = cmp.mapping.abort(),
 			c = cmp.mapping.close(),
 		}),
-		['<CR>'] = cmp.mapping.confirm({ select = true }),
-		-- ["<Tab>"] = cmp.mapping(function(fallback)
-		-- 	if cmp.visible() then
-		-- 		cmp.select_next_item()
-		-- 	elseif luasnip.expand_or_jumpable() then
-		-- 		luasnip.expand_or_jump()
-		-- 	elseif has_words_before() then
-		-- 		cmp.complete()
-		-- 	else
-		-- 		fallback()
-		-- 	end
-		-- end, { "i", "s" }),
-		-- ["<S-Tab>"] = cmp.mapping(function(fallback)
-		-- 	if cmp.visible() then
-		-- 		cmp.select_prev_item()
-		-- 	elseif luasnip.jumpable(-1) then
-		-- 		luasnip.jump(-1)
-		-- 	else
-		-- 		fallback()
-		-- 	end
-		-- end, { "i", "s" }),
+		['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
 	},
 	sources = cmp.config.sources({
 		{ name = 'nvim_lsp' },
-		-- { name = 'nvim_lua' },
-		{ name = 'luasnip', option = { use_show_condition = false } },
-		{ name = 'path' },
-		{ name = 'buffer' },
+		{ name = 'luasnip' }, -- For luasnip users.
 	}, {
-		{
-			name = 'buffer',
-			-- keyword_length = 5,
-			-- option = {
-			-- 	get_bufnrs = function() return { vim.api.nvim_get_current_buf() } end
-			-- }
-		}
-	}),
+		{ name = 'buffer' },
+		{ name = 'path' },
+	})
 })
 
 -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
@@ -141,31 +61,3 @@ cmp.setup.cmdline(':', {
 	})
 })
 
--- --
--- -- use nvim-cmp as omnicomplete handler
--- --
--- _G.vimrc = _G.vimrc or {}
--- _G.vimrc.cmp = _G.vimrc.cmp or {}
--- _G.vimrc.cmp.lsp = function()
---   cmp.complete({
---     config = {
---       sources = {
---         { name = 'nvim_lsp' }
---       }
---     }
---   })
--- end
--- _G.vimrc.cmp.snippet = function()
---   cmp.complete({
---     config = {
---       sources = {
---         { name = 'vsnip' }
---       }
---     }
---   })
--- end
---
--- vim.cmd([[
---   inoremap <C-x><C-o> <Cmd>lua vimrc.cmp.lsp()<CR>
---   inoremap <C-x><C-s> <Cmd>lua vimrc.cmp.snippet()<CR>
--- ]])

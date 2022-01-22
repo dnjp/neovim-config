@@ -11,17 +11,11 @@ require('settings')
 
 require('plugins')
 
-require('easy')
-
 require('search')
 
 require('lsp')
 
 require('completion')
-
-require('status')
-
-require('theme')
 
 require('tree')
 
@@ -32,3 +26,5 @@ require('git')
 require('shell')
 
 require('keymappings')
+
+require('theme')

@@ -1,21 +1,15 @@
-local util = require('util')
 local lspconfig = require('lspconfig')
 local lsp_installer = require("nvim-lsp-installer")
 local lsp_installer_path = require("nvim-lsp-installer.path")
-local dap_install = require("dap-install")
 
 local lsp_installer_dir = lsp_installer_path.concat {vim.fn.stdpath 'data', 'lsp_servers'}
-local lsp_installer_servers = require'nvim-lsp-installer.servers'
 
---
--- DAP
---
-dap_install.config("go_delve", {})
-require("dapui").setup()
+-- use ncm2/float-preview.nvim to show lsp documentation
+-- previews in a floating window instead of opening a 
+-- separate preview window that must be closed
+vim.cmd [[set completeopt=menu]]
+vim.cmd [[let g:float_preview#docked = 1]]
 
-require("nvim-dap-virtual-text").setup()
-require("dapui").setup()
-require("nvim-dap-virtual-text").setup()
 require('go').setup({
 	goimport='gopls', -- goimport command, can be gopls[default] or goimport
 	-- gofmt = 'gofumpt', --gofmt cmd,
@@ -39,24 +33,32 @@ require('go').setup({
 	gopls_cmd = {lsp_installer_dir .. '/go/gopls'},
 	fillstruct = 'gopls', -- can be nil (use fillstruct, slower) and gopls
 	lsp_diag_hdlr = true, -- hook lsp diag handler
-	dap_debug = true, -- set to false to disable dap
+	dap_debug = false, -- set to false to disable dap
 	textobjects = false, -- enable default text jobects through treesittter-text-objects
 	test_runner = 'go', -- richgo, go test, richgo, dlv, ginkgo
 	run_in_floaterm = false, -- set to true to run in float window.
 	--float term recommand if you use richgo/ginkgo with terminal color
-	dap_debug_keymap = true, -- set keymaps for debugger
-	dap_debug_gui = true, -- set to true to enable dap gui, highly recommand
-	dap_debug_vt = true, -- set to true to enable dap virtual text
+	dap_debug_keymap = false, -- set keymaps for debugger
+	dap_debug_gui = false, -- set to true to enable dap gui, highly recommand
+	dap_debug_vt = false, -- set to true to enable dap virtual text
 	build_tags = "integration" -- set default build tags
 })
-
--- Format on save
--- vim.api.nvim_exec([[ autocmd BufWritePre *.go :silent! lua require('go.format').gofmt() ]], false)
 
 -- Import on save
 vim.api.nvim_exec([[ autocmd BufWritePre *.go :silent! lua require('go.format').goimport() ]], false)
 
 local on_attach = function(client, bufnr)
+	require "lsp_signature".on_attach({
+		doc_lines = 0,
+		floating_window = false,
+		floating_window_above_cur_line = false,
+		hint_prefix = "",
+		bind = true, -- This is mandatory, otherwise border config won't get registered.
+		handler_opts = {
+			border = "rounded"
+		}
+	}, bufnr)
+
 	local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
 	local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
@@ -71,14 +73,14 @@ local on_attach = function(client, bufnr)
 	buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
 	buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
 	buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-	buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+	-- buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
 	buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
 	buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
 	buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
 	buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
 	buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
 	buf_set_keymap('n', '<space>ca', '<cmd>lua require(\'fzf-lua\').lsp_code_actions()<CR>', opts)
-	buf_set_keymap('n', '<space>fs', '<cmd>lua require(\'fzf-lua\').lsp_document_symbols()<CR>', opts)
+	buf_set_keymap('n', '<space>s', '<cmd>lua require(\'fzf-lua\').lsp_document_symbols()<CR>', opts)
 
 	buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
 	buf_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
@@ -94,44 +96,7 @@ end
 -- See: https://github.com/neovim/nvim-lspconfig/wiki/UI-customization
 --
 
--- disable inline diagnostics
-vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-    vim.lsp.diagnostic.on_publish_diagnostics, {
-        virtual_text = true,
-	signs = true,
-	underline = true,
-	update_in_insert = false,
-	severity_sort = false,
-    }
-)
-
--- show diagnostics in hover window instead of inline
--- vim.cmd [[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]]
-
--- show diagnostics in message area instead of inline
--- function PrintDiagnostics(opts, bufnr, line_nr, client_id)
---   opts = opts or {}
---
---   bufnr = bufnr or 0
---   line_nr = line_nr or (vim.api.nvim_win_get_cursor(0)[1] - 1)
---
---   local line_diagnostics = vim.lsp.diagnostic.get_line_diagnostics(bufnr, line_nr, opts, client_id)
---   if vim.tbl_isempty(line_diagnostics) then return end
---
---   local diagnostic_message = ""
---   for i, diagnostic in ipairs(line_diagnostics) do
---     diagnostic_message = diagnostic_message .. string.format("%d: %s", i, diagnostic.message or "")
---     print(diagnostic_message)
---     if i ~= #line_diagnostics then
---       diagnostic_message = diagnostic_message .. "\n"
---     end
---   end
---   vim.api.nvim_echo({{diagnostic_message, "Normal"}}, false, {})
--- end
--- vim.cmd [[ autocmd CursorHold * lua PrintDiagnostics() ]]
-
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 --
 --
@@ -170,4 +135,25 @@ lsp_installer.on_server_ready(function(server)
 	server:setup(server_options)
 end)
 
+--
+-- vim.diagnostic.config({
+--   virtual_text = false,
+--   signs = true,
+--   underline = true,
+--   update_in_insert = false,
+--   severity_sort = false,
+-- })
 
+vim.lsp.set_log_level(4)
+
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+    vim.lsp.diagnostic.on_publish_diagnostics, {
+        virtual_text = false,
+	signs = true,
+	underline = true,
+	update_in_insert = false,
+	severity_sort = false,
+    }
+)
+
+vim.o.pumheight = 8

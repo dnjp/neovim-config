@@ -9,6 +9,8 @@ util.map('n', ';', ':')
 util.map('n', 'Q', ':q<CR>')
 util.map('n', '<leader>k', ':noh<CR>')
 util.map('n', '<leader>l', ':b #<CR>')
+util.map('n', '<leader>T', ':lua load_theme()<CR>')
+util.map('n', '<C-Q>', ':BufDel<CR>')
 
 --
 -- navigation
@@ -83,44 +85,6 @@ end
 -- to toggle term
 vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
 
-local Terminal  = require('toggleterm.terminal').Terminal
-local lazygit = Terminal:new({
-	cmd = "zsh -c 'source ~/.zshrc && lazygit'",
-	dir = "git_dir",
-	hidden = true,
-	-- direction = "horizontal",
-	direction = "float",
-	float_opts = {
-	  border = "single",
-	},
-	insert_mappings = false,
-	on_open = function(term)
-	  vim.cmd ':resize 40'
-	  vim.api.nvim_buf_set_keymap(term.bufnr, "t", "<C-q>", "<cmd>lua _lazygit_toggle()<CR>", {noremap = true, silent = true})
-	end,
-	on_close = function(term)
-	  vim.cmd ':resize 15'
-	end,
-})
-
-function _lazygit_toggle()
-	lazygit:toggle()
-end
-
--- lazygit
-vim.api.nvim_set_keymap("n", "<leader>s", "<cmd>lua _lazygit_toggle()<CR>", {noremap = true, silent = true})
-util.map('n', "<C-A-\\>", ":ToggleTermToggleAll<CR>", opts)
-
---
--- Task Runners
---
-util.map('n', '<Leader>R', ':VimuxPromptCommand<CR>')
-util.map('n', '<Leader>rg', ':VimuxPromptCommand("go ")<CR>')
-util.map('n', '<Leader>rm', ':VimuxPromptCommand("make ")<CR>')
-util.map('n', '<Leader>rr', ':VimuxRunLastCommand<CR>')
-util.map('n', '<Leader>ri', ':VimuxInspectRunner<CR>')
-util.map('n', '<Leader>rc', ':VimuxCloseRunner<CR>')
-
 --
 -- Text Movement
 --
@@ -143,28 +107,4 @@ vim.cmd [[autocmd FileType go nmap <Leader>gdt :GoDebug test<CR>]]
 vim.cmd [[autocmd FileType go nmap <Leader>gdf :GoDebug file<CR>]]
 vim.cmd [[autocmd FileType go nmap <Leader>gdd :GoDebug nearest<CR>]]
 vim.cmd [[autocmd FileType go nmap <Leader>gt :GoTest<CR>]]
-
---
--- DAP
---
--- Run :GoDebug <kind> (or manual call dap.continue()) which will 
--- enable the following keybindings for the Go debug mode:
---
--- c	continue
--- n	next
--- s	step
--- o	stepout
--- S	cap S: stop debug
--- u	up
--- D	cap D: down
--- C	cap C: run to cursor
--- b	toggle breakpoint
--- P	cap P: pause
--- p	print, hover value (also in visual mode)
---
-util.map('n', '<Leader>ds', '<cmd>lua require"dap".continue()<CR>', opts)
-util.map('n', '<Leader>dq', '<cmd>lua require"dap".terminate()<CR>', opts)
-util.map('n', '<Leader>bp', '<cmd>lua require"dap".toggle_breakpoint()<CR>', opts)
-util.map('n', '<Leader>di', '<cmd>lua require"dap".step_into()<CR>', opts)
-util.map('n', '<Leader>do', '<cmd>lua require"dap".step_over()<CR>', opts)
 

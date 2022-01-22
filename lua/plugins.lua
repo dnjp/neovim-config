@@ -34,57 +34,31 @@ return require('packer').startup(function(use)
 			'neovim/nvim-lspconfig',
 		},
 	}
-	-- debugger adapter protocol (dap)
-	use 'mfussenegger/nvim-dap'
-	use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
-	use {
-		'theHamsta/nvim-dap-virtual-text',
-		requires = {
-			'nvim-treesitter/nvim-treesitter',
-			'mfussenegger/nvim-dap',
-		},
-	}
-	use 'Pocco81/DAPInstall.nvim'
+	use 'ncm2/float-preview.nvim'
+	use 'ray-x/lsp_signature.nvim'
 
-	--
 	-- completion
-	--
 	use 'hrsh7th/cmp-nvim-lsp'
 	use 'hrsh7th/cmp-buffer'
 	use 'hrsh7th/cmp-path'
 	use 'hrsh7th/cmp-cmdline'
 	use 'hrsh7th/nvim-cmp'
-	use 'hrsh7th/cmp-nvim-lua'
-	-- vs code like completion candidate icons
-	use 'onsails/lspkind-nvim'
-
-	-- snippets
-	use "rafamadriz/friendly-snippets"
 	use 'L3MON4D3/LuaSnip'
 	use 'saadparwaiz1/cmp_luasnip'
 
-	--
-	-- ui
-	--
-	use 'nvim-lua/plenary.nvim'
-	use 'nvim-lua/popup.nvim'
 	---- themes
-	use 'EdenEast/nightfox.nvim'
 	use 'chriskempson/base16-vim'
+	use 'pbrisbin/vim-colors-off'
+
 	---- file tree
 	use {
 		'kyazdani42/nvim-tree.lua',
-		requires = {
-			'kyazdani42/nvim-web-devicons', -- optional, for file icon
-		},
 	}
 
 	--
 	-- searching
 	--
 	use { 'ibhagwan/fzf-lua',
-		-- optional for icon support
-		requires = { 'kyazdani42/nvim-web-devicons' }
 	}
 
 	--
@@ -96,44 +70,22 @@ return require('packer').startup(function(use)
 			'nvim-lua/plenary.nvim'
 		},
 	}
-	use 'whiteinge/diffconflicts'
 
-	--
-	-- ease of use
-	--
-	use {
-		'folke/which-key.nvim',
-		config = function()
-			require('which-key').setup{}
-		end
-	}
 	-- make it easy to work with super user owned files
 	use 'lambdalisue/suda.vim'
-	-- various minimal tools
-	use 'nvim-lualine/lualine.nvim'
 	-- automatically detect indentation
 	use 'tpope/vim-sleuth'
 
 	--
 	-- Editing behavior
 	--
-	use 'matze/vim-move'
-	use {
-		"blackCauldron7/surround.nvim",
-		config = function()
-			require"surround".setup {mappings_style = "sandwich"}
-		end
-	}
+	use 'matze/vim-move' -- allows moving lines up/down
+	use 'ojroques/nvim-bufdel' -- better buffer deletion
 
 	-- commenting
 	use {
 		'numToStr/Comment.nvim',
 	}
-
-	--
-	-- terminal
-	--
-	use {'akinsho/toggleterm.nvim'}
 
 	--
 	-- tmux
@@ -144,7 +96,11 @@ return require('packer').startup(function(use)
 			require('Navigator').setup()
 		end
 	}
-	use 'preservim/vimux'
+
+	--
+	-- shell
+	--
+	use 'nanotee/zoxide.vim'
 
 	if packer_bootstrap then
 		require('packer').sync()
